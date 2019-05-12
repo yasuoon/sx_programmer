@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="shift_jis"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Resource>
+    <CPUNumber>0</CPUNumber>
+    <ProcessorType>NP1PM-48E</ProcessorType>
+    <Name>Resource</Name>
+    <Pous>
+      <Pou>
+        <Name>test001</Name>
+        <PouType>0</PouType>
+        <PouNumber>250</PouNumber>
+      </Pou>
+    </Pous>
+  </Resource>
+</root>
