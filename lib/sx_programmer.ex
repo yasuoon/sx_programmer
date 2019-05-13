@@ -14,7 +14,7 @@ defmodule SxProgrammer do
 
   @head [0, 250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,]
 
-  @dest "/mnt/hgfs/share/test001.il"
+  @dest "temp/test001/test001/Resource/test001.il"
 
   #@doc false
   def hello do
