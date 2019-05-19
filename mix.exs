@@ -21,7 +21,8 @@ defmodule SxProgrammer.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:nimble_csv, "~> 0.6"}
+      {:nimble_csv, "~> 0.6"},
+      {:nimble_parsec, "~> 0.5"}
     ]
   end
 end
