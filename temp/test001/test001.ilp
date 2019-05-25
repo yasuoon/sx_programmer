@@ -8,7 +8,7 @@
       <Pou>
         <Name>test001</Name>
         <PouType>0</PouType>
-        <PouNumber>250</PouNumber>
+        <PouNumber>255</PouNumber>
       </Pou>
     </Pous>
   </Resource>

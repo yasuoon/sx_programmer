@@ -12,7 +12,7 @@ defmodule SxProgrammer do
   end
   alias NimbleCSV.RFC4180, as: CSV
 
-  @head [0, 250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,]
+  @head [0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,]
 
   @dest "temp/test001/test001/Resource/test001.il"
 
@@ -21,7 +21,7 @@ defmodule SxProgrammer do
     CSV.dump_to_iodata [@head]
   end
 
-  def blocks1(fi, fo, ft, count) do
+  def testb1(fi, fo, ft, count) do
     Enum.map(0..(count - 1), fn i ->
       od = fo + i
       id = fi + i
@@ -53,6 +53,40 @@ defmodule SxProgrammer do
     |> mk_list()
   end
 
+  def setrwbs do
+    w = [[["LD", "ON"], ["MC", "0", "M651004"]]] ++
+      ((for n <- 1..5, do: setw1(n))) ++
+        [[["MCR", "0"]]]
+    r = [[["LD", "ON"], ["MC", "0", "M651005"]]] ++
+      ((for n <- 1..5, do: setr1(n))) ++
+        [[["MCR", "0"]]]
+    mk_list(w ++ r)
+    |> write
+  end
+
+  def setw1(n) do
+    exp = [["LD", "M1002F"],
+      ["AND", "M10010"],
+      ["AND=", "#{n}", "WL920"]
+    ]
+    cmds = for i <- 0..9 do
+      ["MUL", "DL#{820+i*2}", "1000", "DL#{100+(n-1)*20+i*2}"]
+    end
+    exp ++ cmds
+  end
+
+  def setr1(n) do
+    exp = [["LD+", "M10010"],
+      ["OR+", "M10011"],
+      ["OR+", "M10012"],
+      ["AND=", "#{n}", "WL920"]
+    ]
+    cmds = for i <- 0..9 do
+      ["DIV", "DL#{100+(n-1)*20+i*2}", "1000", "DL#{820+i*2}"]
+    end
+    exp ++ cmds
+  end
+
   def mk_list(ls) do
     Enum.with_index(ls)
     |> Enum.map(fn {block, i} ->
@@ -72,13 +106,13 @@ defmodule SxProgrammer do
     [bc, rc, command, Enum.count(args) | args]
   end
 
-  def iodata do
-    d = blocks1(100, 500, 20, 10)
-    Enum.concat([@head], d)
+  def iodata(b) do
+    #d = blocks1(100, 500, 20, 10)
+    Enum.concat([@head], b)
     |> CSV.dump_to_iodata
   end
 
-  def write do
-    File.write(@dest, iodata())
+  def write(b) do
+    File.write(@dest, iodata(b))
   end
 end

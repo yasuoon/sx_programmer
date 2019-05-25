@@ -166,3 +166,14 @@ defmodule Tparse do
 
   defparsec :prg, parsec(:prog)
 end
+
+defmodule Prog do
+  def f do
+    p(Tparse.prg("(X10, X10)"))
+  end
+
+  def p({:ok, [t], _, _, _, _}) do
+    t
+  end
+
+end
