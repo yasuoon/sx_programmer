@@ -1,22 +1,30 @@
 defmodule Tparse do
   import NimbleParsec
 
-  int16 = ignore(string("0x"))
+  defmodule Dev do
+    defstruct name: nil, addr: []
+  end
+
+  defmodule Defun do
+    defstruct fun: nil, arg: nil
+  end
+
+  num16 = ignore(string("0x"))
           |> ascii_string([?0..?9, ?a..?f, ?A..?F], min: 1)
           |> map({String, :to_integer, [16]})
 
-  int8 = ignore(string("0o"))
+  num8 = ignore(string("0o"))
          |> ascii_string([?0..?7], min: 1)
          |> map({String, :to_integer, [8]})
 
-  int2 = ignore(string("0b"))
+  num2 = ignore(string("0b"))
          |> ascii_string([?0..?1], min: 1)
          |> map({String, :to_integer, [2]})
 
-  int10 = ascii_string([?0..?9], min: 1)
+  num10 = ascii_string([?0..?9], min: 1)
           |> map({String, :to_integer, [10]})
 
-  defcombinatorp :int, choice([int16, int8, int2, int10])
+  defcombinatorp :int, choice([num16, num8, num2, num10])
 
 
   white_spaces = repeat(ascii_char([?\s, ?\t]))
@@ -50,7 +58,7 @@ defmodule Tparse do
         |> reduce({:dev_r, []})
 
   defp dev_r([shm | addrs]) do
-    {shm, addrs}
+    %Dev{name: shm, addr: addrs}
   end
 
   defcombinatorp(:literal,
@@ -60,13 +68,13 @@ defmodule Tparse do
 
   defcombinatorp(:function,
     identifier
-    |> repeat(parsec(:spaces) |> parsec(:expr))
+    |> optional(parsec(:spaces) |> parsec(:expr))
     |> parsec(:spaces)
     |> reduce({:function_r, []})
   )
 
   defp function_r([funcname | args]) do
-    {:func, funcname, args}
+    {funcname, args}
   end
 
   defcombinatorp(:func_def,
@@ -78,7 +86,7 @@ defmodule Tparse do
   )
 
   defp func_def_r([fun, expr]) do
-    {:def, fun, expr}
+    %Defun{fun: fun, arg: expr}
   end
 
   defcombinatorp(:func_call,
